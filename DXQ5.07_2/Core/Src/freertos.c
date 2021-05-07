@@ -70,11 +70,13 @@ extern GUI_FLASH const GUI_FONT GUI_FontHZ_SimSun_12;
 uint8_t g_fax_data[MAX_DATA_LEN];
 uint8_t g_fay_data[MAX_DATA_LEN];
 uint8_t g_faz_data[MAX_DATA_LEN];
+uint8_t g_temp_data[MAX_DATA_LEN];
 
-#define LINE_FAX 0
-#define LINE_FAY 1
-#define LINE_FAZ 2
-uint8_t g_line_idx=LINE_FAX;
+#define LINE_temp 0
+#define LINE_FAX 1
+#define LINE_FAY 2
+#define LINE_FAZ 3
+uint8_t g_line_idx=LINE_temp;
 
 int g_ws = WS_LOGO;
 uint32_t intick = 0;
@@ -90,6 +92,8 @@ uint8_t pageidx=0;//翻页
 
 uint32_t warntick=0;//报警时间戳
 uint32_t keytick=0; //按键时间戳
+
+float temp_alarm_max=35;//报警温度上限
 /* USER CODE END Variables */
 /* Definitions for MainTask */
 osThreadId_t MainTaskHandle;
@@ -356,7 +360,7 @@ void StartKeyTask(void *argument)
 						}
 						else if(KEY2==key)
 						{	
-						if(g_line_idx>LINE_FAX)
+						if(g_line_idx>LINE_temp)
 								--g_line_idx;
 						}
 						break; 
@@ -462,6 +466,10 @@ void StartDataTask(void *argument)
 	ds18b20_init();
 	
 	uint8_t idx=0;//数组下标
+	uint8_t temp_idx=0;//温度数组下标
+	
+	float temp_min=20;
+	float temp_max=40;//这里假定温度传感器显示的最大、最小温度
 	
 	uint8_t mpuok=MPU_init();
 	uint8_t cnt=0;
@@ -485,8 +493,19 @@ void StartDataTask(void *argument)
 			if(ft<125)
 			{
 				temp=ft;
+				
+				g_temp_data[temp_idx]=32-(temp-30)*20/10;
+				++temp_idx;
+				
+				if(temp_idx>=MAX_DATA_LEN)
+				{
+					memcpy(g_temp_data,g_temp_data+1,MAX_DATA_LEN-1);//内存复制
+					
+					temp_idx=MAX_DATA_LEN-1;//新数据永远放在数组最后一个位置
+				}
+				
 				printf("temp:%.1f\r\n",temp);//打印温度数据
-				if(temp>=35)
+				if(temp>=temp_alarm_max)
 				{
 					tempwarn=1;
 //					warntick=osKernelGetTickCount();
@@ -680,6 +699,7 @@ void DrawGUI1(void)
 
 void DrawGUI2(void)
 {
+	float temp_alarm_max_height=32-(temp_alarm_max-30)*20/10;
 	char str[30];//声明一个字符串
 	GUI_Clear();
 	GUI_SetFont(&GUI_FontHZ_SimSun_12);
@@ -698,9 +718,21 @@ void DrawGUI2(void)
 	GUI_DrawHLine(32,51,128);//横向X轴
 	
 	uint8_t i;
+	uint8_t j;
 	switch(g_line_idx)
 	{
 		default:
+			sprintf(str,"温度:%.1f℃",temp);
+			for(i=0;i<MAX_DATA_LEN-1;++i)
+			{
+				GUI_DrawLine(51+i,g_temp_data[i],51+i+1,g_temp_data[i+1]);
+			}
+			for(j=48;j<128;j+=2)
+			{
+				GUI_DrawPixel(j,temp_alarm_max_height);
+			}
+			break;
+		case LINE_FAX:
 			sprintf(str,"俯仰角:%.1f°",fAX);
 			for(i=0;i<MAX_DATA_LEN-1;++i)
 			{
