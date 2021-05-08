@@ -97,7 +97,7 @@ uint32_t keytick=0; //按键时间戳
 
 uint32_t scantime=50;//扫描时间间隔
 
-float temp_alarm_max=35;//报警温度上限
+float temp_alarm_max=32;//报警温度上限
 /* USER CODE END Variables */
 /* Definitions for MainTask */
 osThreadId_t MainTaskHandle;
@@ -485,30 +485,36 @@ void StartDataTask(void *argument)
 	
 	uint8_t mpuok=MPU_init();
 	uint8_t cnt=0;
+	uint32_t dstick=0;
+	uint32_t newdstick=0;
+	uint32_t mputick=0;
+	int warncnt=0;
+	float ft = 0;
+	
 	while(cnt++<3&&!mpuok)
 	{
 		osDelay(500);
 		mpuok=MPU_init();
-
 	}
-	uint32_t dstick=0;
-	uint32_t mputick=0;
-	int warncnt=0;
+	
   /* Infinite loop */
   for(;;)
   {
 		
-		if(osKernelGetTickCount()>=dstick+scantime)
+		if(osKernelGetTickCount()>=dstick+1000)
 		{
 			dstick=osKernelGetTickCount();
-			float ft = ds18b20_read();
-			if(ft<125)
+			ft = ds18b20_read();
+		}			
+		if(ft<125)
+		{
+			temp=ft;
+			if(osKernelGetTickCount()>=newdstick+scantime)
 			{
-				temp=ft;
-				
+				newdstick=osKernelGetTickCount();
 				g_temp_data[temp_idx]=32-(temp-30)*20/10;
 				++temp_idx;
-				
+			
 				if(temp_idx>=MAX_DATA_LEN)
 				{
 					memcpy(g_temp_data,g_temp_data+1,MAX_DATA_LEN-1);//内存复制
@@ -520,7 +526,7 @@ void StartDataTask(void *argument)
 				if(temp>=temp_alarm_max)
 				{
 					tempwarn=1;
-//					warntick=osKernelGetTickCount();
+// 				warntick=osKernelGetTickCount();
 				}
 			}
 		}
@@ -530,11 +536,11 @@ void StartDataTask(void *argument)
 			//快读慢存
 			if(osKernelGetTickCount()>=mputick+50)
 			{
-				mputick=osKernelGetTickCount();
 				MPU_getdata();//获取MPU6050当前状态数据
 			}
 			if(osKernelGetTickCount()>=mputick+scantime)
 			{			
+				mputick=osKernelGetTickCount();
 				g_fax_data[idx]=32-fAX*20/90;//数据范围±90°，偏移量32个像素
 				g_fay_data[idx]=32-fAY*20/180;//数据范围±180°
 				g_faz_data[idx]=32-fAZ*20/180;
@@ -561,8 +567,7 @@ void StartDataTask(void *argument)
 				else
 				warncnt=0;
 			}
-		}
-			
+		}			
     osDelay(1);
   }
   /* USER CODE END StartDataTask */
