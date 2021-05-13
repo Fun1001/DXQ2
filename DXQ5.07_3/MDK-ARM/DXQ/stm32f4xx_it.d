@@ -31,4 +31,8 @@ dxq/stm32f4xx_it.o: ..\Core\Src\stm32f4xx_it.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
-  ..\Core\Inc\stm32f4xx_it.h
+  ..\Core\Inc\stm32f4xx_it.h ..\Drivers\COMM\COMM.h ..\Core\Inc\usart.h \
+  ..\Core\Inc\main.h E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h \
+  ..\Drivers\COMM\ESP01.h ..\Drivers\COMM\comm.h

@@ -21,20 +21,7 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-uint8_t aRxBuffer1[1];		// 串口1接收数据
-#include "stdio.h"
-// printf到调试窗口
-int fputc(int ch, FILE *f) {
-#ifdef __DBG_ITM
-  if (CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk) {
-    while (ITM->PORT[0].u32 == 0);
-    ITM->PORT[0].u8 = ch;
-  }
-#else
-	HAL_UART_Transmit(&huart1 , (uint8_t *)&ch, 1, 0xFFFF);
-#endif
-  return(ch);
-}
+
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;

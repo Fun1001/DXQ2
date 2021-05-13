@@ -48,4 +48,7 @@ dxq/freertos.o: ..\Core\Src\freertos.c \
   ..\Drivers\DS_18B20\DS_18B20.h ..\Drivers\MPU6050\MPU6050.h \
   ..\Drivers\MPU6050\inv_mpu.h \
   ..\Drivers\MPU6050\inv_mpu_dmp_motion_driver.h \
-  ..\Drivers\MPU6050\STM32_I2C.h ..\Drivers\3Ddisplay\Display_3D.h
+  ..\Drivers\MPU6050\STM32_I2C.h ..\Drivers\3Ddisplay\Display_3D.h \
+  ..\Drivers\COMM\COMM.h ..\Core\Inc\usart.h \
+  ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h \
+  ..\Drivers\COMM\ESP01.h ..\Drivers\COMM\comm.h

@@ -34,6 +34,8 @@
 #include "DS_18B20.h"
 #include "MPU6050.h"
 #include "Display_3D.h"
+#include "COMM.h"
+#include "ESP01.h"
 //#include "Display_3D.h"
 /* USER CODE END Includes */
 
@@ -99,6 +101,8 @@ uint32_t keytick=0; //按键时间戳
 uint32_t scantime=50;//扫描时间间隔
 
 float temp_alarm_max=32;//报警温度上限
+
+uint8_t g_bUping=0;
 /* USER CODE END Variables */
 /* Definitions for MainTask */
 osThreadId_t MainTaskHandle;
@@ -147,7 +151,7 @@ void DrawGUI4(void);
 void Beep(int time,int tune);
 void DispSeg(uint8_t num[4],uint8_t dot);
 void BeepDone(void);
-
+void InitESP8266(void);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -355,8 +359,10 @@ void StartKeyTask(void *argument)
 						if(KEY1==key)
 							g_ws=WS_GUI1;
 						else if(KEY4==key)
+						{
 							g_ws=WS_GUI3;
-						
+							InitESP8266();						
+						}
 						else if(KEY3==key)
 						{	
 						if(g_line_idx<LINE_3D)
@@ -387,11 +393,22 @@ void StartKeyTask(void *argument)
 						break;
 					case WS_GUI4:
 						if(KEY1==key)
-							g_ws=WS_GUI3;
+						{
+							g_ws=WS_GUI3;	
+							InitESP8266();
+						}
 						else if(KEY4==key)
 							g_ws=WS_GUI1;
 						else if(KEY6==key)
 							g_ws=WS_LOGO;
+						else if(KEY5==key)
+						{
+							if(0==pageidx)
+							{
+								//初始化ESP8266工作模式
+								InitESP8266();
+							}
+						}
 						break;
 					default:
 						if(KEY6==key)
@@ -415,9 +432,25 @@ void StartKeyTask(void *argument)
 void StartUartTask(void *argument)
 {
   /* USER CODE BEGIN StartUartTask */
+	StartRecvUart1();
+	ESP_Init();
   /* Infinite loop */
   for(;;)
   {
+		//串口1数据处理
+		if(recv1_len>0)
+		{
+			printf("%s",recv1_buff);
+			recv1_len=0;
+		}
+		
+		//ESP串口数据处理
+		ESP_Proc();
+		if(esp8266.recv_len>0)
+		{
+			printf("%s",esp8266.recv_data);
+			esp8266.recv_len=0;
+		}
 		
     osDelay(1);
   }
@@ -489,6 +522,8 @@ void StartDataTask(void *argument)
 	uint32_t dstick=0;
 	uint32_t newdstick=0;
 	uint32_t mputick=0;
+	uint32_t uptick=0;
+	uint32_t g_upstep=0;
 	int warncnt=0;
 	float ft = 0;
 	
@@ -523,11 +558,11 @@ void StartDataTask(void *argument)
 					temp_idx=MAX_DATA_LEN-1;//新数据永远放在数组最后一个位置
 				}
 				
-				printf("temp:%.1f\r\n",temp);//打印温度数据
+				
 				if(temp>=temp_alarm_max)
 				{
 					tempwarn=1;
-// 				warntick=osKernelGetTickCount();
+					printf("temp:%.1f\r\n",temp);//打印温度数据
 				}
 			}
 		}
@@ -554,21 +589,32 @@ void StartDataTask(void *argument)
 					
 					idx=MAX_DATA_LEN-1;//新数据永远放在数组最后一个位置
 				}
-				
-				printf("axyz:%6d %6d %6d,gxyz:%6d %6d %6d\r\n",ax,ay,az,gx,gy,gz);//打印数据
-				
+								
 				if(gx*gx+gy*gy+gz*gz>800000)
 				{
 					if(++warncnt>=8)
 					{
 						mpuwarn=1;
-//						warntick=osKernelGetTickCount();
+						printf("axyz:%6d %6d %6d,gxyz:%6d %6d %6d\r\n",ax,ay,az,gx,gy,gz);//打印数据
 					}
 				}
 				else
 				warncnt=0;
 			}
-		}			
+		}		
+			
+		if(g_bUping && esp8266.bconn)
+		{
+			if(osKernelGetTickCount()>=uptick+g_upstep)
+			{
+				uptick=osKernelGetTickCount();
+				
+				char buf[100];
+				sprintf(buf,"T:%4.1f, A:%6d,%6d,%6d, G:%6d,%6d,%6d, F:%5.1f,%5.1f,%5.1f, W:%d\n",
+				temp,ax,ay,az,gx,gy,gz,fAX,fAY,fAZ,(tempwarn?1:0)+(mpuwarn?2:0));
+				USendStr(&huart6,(uint8_t*)buf,strlen(buf));
+			}
+		}
     osDelay(1);
   }
   /* USER CODE END StartDataTask */
@@ -789,6 +835,7 @@ void DrawGUI2(void)
 }
 void DrawGUI3(void)
 {
+	char buf[30];
 	GUI_Clear();
 	GUI_SetFont(&GUI_FontHZ_SimSun_12);
 	
@@ -800,11 +847,17 @@ void DrawGUI3(void)
 	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
 	GUI_DispStringAt("参数设置", 0 , 39);
 	GUI_DispStringAt("K1↑ K2← K3→ K4↓", 0 , 52);
+	
+	GUI_DispStringAt((char*)(esp8266.ssid),50,0);
+	GUI_DispStringAt(TCP_SERVER,50,12);
+	sprintf(buf,"端口:%d",TCP_PORT);
+	GUI_DispStringAt(buf,50,24);
+	GUI_DispStringAt(esp8266.bconn ? "OK":"ERR",50,36);
+	GUI_DispStringAt(g_bUping ? "上传中":"未上传",85,36);
+
 	//画线
 	GUI_DrawHLine(52,0,128);
 	GUI_DrawVLine(48,0,52);
-
-	
 	GUI_Update();
 }
 void DrawGUI4(void)
@@ -857,6 +910,30 @@ void DispSeg(uint8_t num[4],uint8_t dot)
 	{
 		Write595(i,num[i],(dot==(i+1)?1:0));
 		osDelay(1);
+	}
+}
+//ESP8266初始化
+void InitESP8266(void)
+{
+	ESP_SetCIPMode(0);//退出透传模式
+	if(ESP_IsOK())
+	{	
+		ESP_SetMode(3);//station+AP模式
+		ESP_GetSSID();
+		
+		if(ESP_JoinAP(AP_NAME,AP_PSW))
+		{
+			ESP_GetIPAddr();
+			ESP_SetTCPServer(0,0);
+			ESP_SetCIPMux(0);
+			printf("Station ip:%s\n",esp8266.st_addr);//将读到的IP地址显示出来
+			
+			if(ESP_ClientToServer(TCP_SERVER,TCP_PORT))
+			{
+				ESP_SetCIPMode(1);//进入透传模式
+				printf("ESP8266 init ok!\n");
+			}
+		}
 	}
 }
 /* USER CODE END Application */
