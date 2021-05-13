@@ -17,19 +17,12 @@
 *******************************************************************************/
 
 
-//#include "gui.h"
+
 #include "math.h"
-#include "led.h"
-
 #include "Display_3D.h"
-//#include"Transform_3D.h"
-#include "lcd_drive.h"
-#include "config.h"
-//#include "front.h"
-
-
-
-
+#include "GUI.h"
+//void RateCube(float x,float y,float z,uint16_t color,uint16_t XO,uint16_t YO);//透视投影
+//void RotatePic32X32(unsigned char *dp,float ax,float ay,float az,uint16_t color,uint16_t XO,uint16_t YO);//在三维空间中旋转一个32x32的字符或图形
 
 /**********************************************************/
 //**函数：Retate_cube
@@ -113,7 +106,7 @@ void RateCube(float x,float y,float z,GUI_COLOR color,uint16_t XO,uint16_t YO)
 														//	还要注意图像不要大到超过两个屏
 }
 
-	GUI_SetColor(color)
+	GUI_SetColor(color);
 	GUI_DrawLine(Cube_dis[0].x,Cube_dis[0].y,Cube_dis[1].x,Cube_dis[1].y);
 	GUI_DrawLine(Cube_dis[0].x,Cube_dis[0].y,Cube_dis[2].x,Cube_dis[2].y);
 	GUI_DrawLine(Cube_dis[3].x,Cube_dis[3].y,Cube_dis[1].x,Cube_dis[1].y);
@@ -161,7 +154,7 @@ void RotatePic32X32(unsigned char *dp,float ax,float ay,float az,GUI_COLOR color
 	_2Dzuobiao PointDis;
 	
 	structure_3D(gMAT);						//构建单位矩阵
-	Translate3D(gMAT,-16,-316,-ZO); 		//平移变换矩阵
+	Translate3D(gMAT,-16,-16,-ZO); 		//平移变换矩阵
 	Scale_3D(gMAT,1,1,1);		 			//比例变换矩阵
 	Rotate_3D(gMAT,ax,ay,az);				//旋转变换矩阵
 	Translate3D(gMAT,16,16,ZO); 			//平移变换矩阵	

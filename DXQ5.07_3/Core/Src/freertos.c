@@ -33,6 +33,7 @@
 #include "tim.h"
 #include "DS_18B20.h"
 #include "MPU6050.h"
+#include "Display_3D.h"
 //#include "Display_3D.h"
 /* USER CODE END Includes */
 
@@ -110,14 +111,14 @@ const osThreadAttr_t MainTask_attributes = {
 osThreadId_t KeyTaskHandle;
 const osThreadAttr_t KeyTask_attributes = {
   .name = "KeyTask",
-  .stack_size = 256 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityBelowNormal,
 };
 /* Definitions for UartTask */
 osThreadId_t UartTaskHandle;
 const osThreadAttr_t UartTask_attributes = {
   .name = "UartTask",
-  .stack_size = 256 * 4,
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityBelowNormal,
 };
 /* Definitions for GUITask */
@@ -131,7 +132,7 @@ const osThreadAttr_t GUITask_attributes = {
 osThreadId_t DataTaskHandle;
 const osThreadAttr_t DataTask_attributes = {
   .name = "DataTask",
-  .stack_size = 128 * 4,
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
 
@@ -309,7 +310,7 @@ void StartKeyTask(void *argument)
 					keytick=0;
 				}
 			}
-			osDelay(1);
+			osDelay(10);
 		}
 		if(keyflag==0)		//°´¼üÔÊÐí
 		{
@@ -358,7 +359,7 @@ void StartKeyTask(void *argument)
 						
 						else if(KEY3==key)
 						{	
-						if(g_line_idx<LINE_FAZ)
+						if(g_line_idx<LINE_3D)
 								++g_line_idx;
 						}
 						else if(KEY2==key)
@@ -398,7 +399,7 @@ void StartKeyTask(void *argument)
 						break;
 				}
 				
-				osDelay(1);
+				osDelay(10);
 			}
 		}
   /* USER CODE END StartKeyTask */
@@ -777,9 +778,9 @@ void DrawGUI2(void)
 			}
 			break;
 		case LINE_3D:
-			ox=(48+128)/2;
-			oy=(12+40)/2+2;
-//			RateCube(fAX,fAY,fAZ,GUI_COLOR_WHITE,ox,oy);
+			ox=(128)/2;
+			oy=(32)/2;
+			RateCube(fAX,fAY,fAZ,GUI_COLOR_WHITE,ox,oy);
 			break;
 	}
 	GUI_DispStringAt(str,51,0);
