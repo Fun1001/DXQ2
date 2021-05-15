@@ -99,10 +99,15 @@ uint32_t warntick=0;//报警时间戳
 uint32_t keytick=0; //按键时间戳
 
 uint32_t scantime=50;//扫描时间间隔
+ 
+float temp_alarm_max=32;	//报警温度上限
+uint16_t g_upstep=100;		//上传时间间隔
+uint8_t g_mpustep=7;			//震动灵敏度
+uint8_t g_warntime=30;		//报警时长
 
-float temp_alarm_max=32;//报警温度上限
+uint8_t g_bUping=0;//数据上传开关
 
-uint8_t g_bUping=0;
+uint8_t g_paridx=0;//选择一个设置参数反色显示，参数索引
 /* USER CODE END Variables */
 /* Definitions for MainTask */
 osThreadId_t MainTaskHandle;
@@ -241,11 +246,11 @@ void StartMainTask(void *argument)
 		}
 		
 		//报警倒计时
-		if(tempwarn||mpuwarn)
+		if((tempwarn||mpuwarn)&&g_warntime>0)
 		{
 			if(0==warntick)
 				warntick=osKernelGetTickCount();
-			else if(osKernelGetTickCount()>=warntick+30000)//报警时长30s
+			else if(osKernelGetTickCount()>=warntick+1000*g_warntime)//报警时长30s
 			{	
 				tempwarn=mpuwarn=0;
 				warntick=0;
@@ -254,7 +259,7 @@ void StartMainTask(void *argument)
 			else			
 			{
 				keyflag=1;		//按键禁止
-				uint32_t tic=warntick+30000-osKernelGetTickCount();
+				uint32_t tic=warntick+1000*g_warntime-osKernelGetTickCount();
 				num[0]=(tic/10000)%10;
 				num[1]=(tic/1000)%10;
 				num[2]=(tic/100)%10;
@@ -394,6 +399,14 @@ void StartKeyTask(void *argument)
 							g_ws=WS_GUI4;
 						else if(KEY6==key)
 							g_ws=WS_LOGO;
+						else if(KEY5==key)
+						{
+							if(0==pageidx)
+							{
+								//初始化ESP8266工作模式
+								InitESP8266();
+							}
+						}
 						break;
 					case WS_GUI4:
 						if(KEY1==key)
@@ -403,15 +416,58 @@ void StartKeyTask(void *argument)
 						}
 						else if(KEY4==key)
 							g_ws=WS_GUI1;
+						else if(KEY2==key)
+						{
+							if(0==g_paridx)
+							{
+								if(temp_alarm_max>0)
+									temp_alarm_max-=1;
+							}
+							if(1==g_paridx)
+							{
+								if(g_mpustep>0)
+									--g_mpustep;
+							}
+							if(2==g_paridx)
+							{
+								if(g_warntime>0)
+									--g_warntime;
+							}
+							if(3==g_paridx)
+							{
+								if(g_upstep>100)
+									g_upstep-=100;
+							}
+						}
+						else if(KEY3==key)
+						{
+							if(0==g_paridx)
+							{
+								if(temp_alarm_max<90)
+									temp_alarm_max+=1;
+							}
+							if(1==g_paridx)
+							{
+								if(g_mpustep<9)
+									++g_mpustep;
+							}
+							if(2==g_paridx)
+							{
+								if(g_warntime<60)
+									++g_warntime;
+							}
+							if(3==g_paridx)
+							{
+								if(g_upstep<10000)
+									g_upstep+=100;
+							}
+						}
 						else if(KEY6==key)
 							g_ws=WS_LOGO;
 						else if(KEY5==key)
 						{
-							if(0==pageidx)
-							{
-								//初始化ESP8266工作模式
-								InitESP8266();
-							}
+							++g_paridx;
+							g_paridx%=4;
 						}
 						break;
 					default:
@@ -518,8 +574,7 @@ void StartDataTask(void *argument)
 	uint8_t idx=0;//数组下标
 	uint8_t temp_idx=0;//温度数组下标
 	
-	float temp_min=20;
-	float temp_max=40;//这里假定温度传感器显示的最大、最小温度
+
 	
 	uint8_t mpuok=MPU_init();
 	uint8_t cnt=0;
@@ -527,7 +582,6 @@ void StartDataTask(void *argument)
 	uint32_t newdstick=0;
 	uint32_t mputick=0;
 	uint32_t uptick=0;
-	uint32_t g_upstep=0;
 	int warncnt=0;
 	float ft = 0;
 	
@@ -594,7 +648,7 @@ void StartDataTask(void *argument)
 					idx=MAX_DATA_LEN-1;//新数据永远放在数组最后一个位置
 				}
 								
-				if(gx*gx+gy*gy+gz*gz>800000)
+				if(g_mpustep>0&&(gx*gx+gy*gy+gz*gz>20000*(10-g_mpustep)))//震动灵敏度改变
 				{
 					if(++warncnt>=8)
 					{
@@ -770,6 +824,13 @@ void DrawGUI1(void)
 
 void DrawGUI2(void)
 {
+	float temp_min=20;
+	float temp_max=40;//这里假定温度传感器显示的最大、最小温度
+	//实时温度最值调整
+	int tt=(((int)(temp)+2)/5)*5;
+	temp_min=tt-10;
+	temp_max=tt+10;
+	
 	float temp_alarm_max_height=32-(temp_alarm_max-30)*20/10;//温度报警的高度
 	char str[30];//声明一个字符串
 	int ox=48;//坐标
@@ -780,7 +841,7 @@ void DrawGUI2(void)
 	
 	GUI_DispStringAt("实时监测",0,0);
 	GUI_SetColor(GUI_COLOR_BLACK);//反色显示
-	GUI_DispStringAt("数据曲线",0,14);
+	GUI_DispStringAt("数据曲线",0,13);
 	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
 	GUI_DispStringAt("无线通信", 0 , 26);
 	GUI_DispStringAt("参数设置", 0 , 39);
@@ -798,14 +859,18 @@ void DrawGUI2(void)
 		default:
 			GUI_DrawHLine(32,51,128);//横向X轴
 			sprintf(str,"温度:%.1f℃",temp);
+			if(temp_alarm_max>=temp_min&&temp_alarm_max<=temp_max)
+			{
+				for(j=48;j<128;j+=2)
+				{
+					GUI_DrawPixel(j,temp_alarm_max_height);
+				}
+			}
 			for(i=0;i<MAX_DATA_LEN-1;++i)
 			{
 				GUI_DrawLine(51+i,g_temp_data[i],51+i+1,g_temp_data[i+1]);
 			}
-			for(j=48;j<128;j+=2)
-			{
-				GUI_DrawPixel(j,temp_alarm_max_height);
-			}
+			
 			break;
 		case LINE_FAX:
 			GUI_DrawHLine(32,51,128);//横向X轴
@@ -849,7 +914,7 @@ void DrawGUI3(void)
 	
 
 	GUI_DispStringAt("实时监测",0,0);
-	GUI_DispStringAt("数据曲线",0,14);	
+	GUI_DispStringAt("数据曲线",0,13);	
 	GUI_SetColor(GUI_COLOR_BLACK);//反色显示
 	GUI_DispStringAt("无线通信", 0 , 26);
 	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
@@ -870,11 +935,13 @@ void DrawGUI3(void)
 }
 void DrawGUI4(void)
 {
+	char buf[20];
+	
 	GUI_Clear();
 	GUI_SetFont(&GUI_FontHZ_SimSun_12);
 	
 	GUI_DispStringAt("实时监测",0,0);
-	GUI_DispStringAt("数据曲线",0,14);
+	GUI_DispStringAt("数据曲线",0,13);
 	GUI_DispStringAt("无线通信",0,26);
 	GUI_SetColor(GUI_COLOR_BLACK);//反色显示
 	GUI_DispStringAt("参数设置",0,39);
@@ -884,6 +951,34 @@ void DrawGUI4(void)
 	GUI_DrawHLine(52,0,128);
 	GUI_DrawVLine(48,0,52);
 
+	GUI_DispStringAt("温度上限:",50,0);
+	GUI_DispStringAt("震动灵敏度:",50,13);
+	GUI_DispStringAt("报警时长:",50,26);
+	GUI_DispStringAt("上传间隔:",50,39);
+	//温度上限
+	sprintf(buf,"%.0f℃",temp_alarm_max);
+	if(0==g_paridx)
+		GUI_SetColor(GUI_COLOR_BLACK);//反色显示
+	GUI_DispStringAt(buf,104,0);
+	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
+	//震动灵敏度
+	sprintf(buf,"%d",g_mpustep);
+	if(1==g_paridx)
+		GUI_SetColor(GUI_COLOR_BLACK);//反色显示
+	GUI_DispStringAt(buf,116,13);
+	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
+	//报警时长
+	sprintf(buf,"%dS",g_warntime);
+	if(2==g_paridx)
+		GUI_SetColor(GUI_COLOR_BLACK);//反色显示
+	GUI_DispStringAt(buf,104,26);
+	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
+	//上传间隔
+	sprintf(buf,"%.1fS",g_upstep/1000.0f);
+	if(3==g_paridx)
+		GUI_SetColor(GUI_COLOR_BLACK);//反色显示
+	GUI_DispStringAt(buf,104,39);
+	GUI_SetColor(GUI_COLOR_WHITE);//恢复反色
 	
 	GUI_Update();
 }

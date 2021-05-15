@@ -3,9 +3,9 @@
 <title>Static Call Graph - [DXQ\DXQ.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image DXQ\DXQ.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6140101: Last Updated: Sat May 15 15:50:54 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6140101: Last Updated: Sat May 15 17:31:22 2021
 <BR><P>
-<H3>Maximum Stack Usage =        896 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        912 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 StartGUITask &rArr; DrawGUI2 &rArr; RateCube &rArr; Rotate_3D &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 <P>
@@ -550,8 +550,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[13e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_getdata
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Rotate_3D
 <LI><a href="#[140]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asin
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Rotate_3D
 <LI><a href="#[1ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_sin
 <LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ieee754_rem_pio2
 <LI><a href="#[1f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_poly
@@ -566,9 +566,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
-<BR>[Called By]<UL><LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Rotate_3D
-<LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
+<BR>[Called By]<UL><LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
 <LI><a href="#[140]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asin
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Rotate_3D
 <LI><a href="#[1f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__mathlib_dbl_invalid
 <LI><a href="#[1fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan
 <LI><a href="#[201]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
@@ -585,6 +585,7 @@ Global Symbols
 <P><STRONG><a name="[a7]"></a>__aeabi_f2d</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, f2d.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartDataTask
 <LI><a href="#[13e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU_getdata
+<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI4
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI2
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI1
 <LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Rotate_3D
@@ -850,8 +851,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartGUITask
 </UL>
 
-<P><STRONG><a name="[ac]"></a>DrawGUI2</STRONG> (Thumb, 668 bytes, Stack size 56 bytes, freertos.o(.text.DrawGUI2))
-<BR><BR>[Stack]<UL><LI>Max Depth = 896<LI>Call Chain = DrawGUI2 &rArr; RateCube &rArr; Rotate_3D &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[ac]"></a>DrawGUI2</STRONG> (Thumb, 748 bytes, Stack size 72 bytes, freertos.o(.text.DrawGUI2))
+<BR><BR>[Stack]<UL><LI>Max Depth = 912<LI>Call Chain = DrawGUI2 &rArr; RateCube &rArr; Rotate_3D &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RateCube
@@ -884,16 +885,18 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartGUITask
 </UL>
 
-<P><STRONG><a name="[b1]"></a>DrawGUI4</STRONG> (Thumb, 136 bytes, Stack size 8 bytes, freertos.o(.text.DrawGUI4))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = DrawGUI4 &rArr; GUI_Clear &rArr; GUI_ClearRect &rArr; SSD1306_DrawFilledRectangle &rArr; SSD1306_DrawLine
+<P><STRONG><a name="[b1]"></a>DrawGUI4</STRONG> (Thumb, 488 bytes, Stack size 40 bytes, freertos.o(.text.DrawGUI4))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = DrawGUI4 &rArr; GUI_Clear &rArr; GUI_ClearRect &rArr; SSD1306_DrawFilledRectangle &rArr; SSD1306_DrawLine
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_Update
+<BR>[Calls]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
+<LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_Update
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_SetFont
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_SetColor
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_DrawVLine
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_DrawHLine
 <LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_DispStringAt
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_Clear
+<LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartGUITask
 </UL>
@@ -2204,7 +2207,7 @@ Global Symbols
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartMainTask
 </UL>
 
-<P><STRONG><a name="[63]"></a>StartDataTask</STRONG> (Thumb, 1196 bytes, Stack size 200 bytes, freertos.o(.text.StartDataTask))
+<P><STRONG><a name="[63]"></a>StartDataTask</STRONG> (Thumb, 1220 bytes, Stack size 200 bytes, freertos.o(.text.StartDataTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 544<LI>Call Chain = StartDataTask &rArr; MPU_getdata &rArr; __hardfp_atan2 &rArr; atan &rArr; __hardfp_atan &rArr; __kernel_poly &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelGetTickCount
@@ -2223,7 +2226,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.text.MX_FREERTOS_Init)
 </UL>
 <P><STRONG><a name="[62]"></a>StartGUITask</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, freertos.o(.text.StartGUITask))
-<BR><BR>[Stack]<UL><LI>Max Depth = 896<LI>Call Chain = StartGUITask &rArr; DrawGUI2 &rArr; RateCube &rArr; Rotate_3D &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 912<LI>Call Chain = StartGUITask &rArr; DrawGUI2 &rArr; RateCube &rArr; Rotate_3D &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GUI_Init
@@ -2235,7 +2238,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.text.MX_FREERTOS_Init)
 </UL>
-<P><STRONG><a name="[60]"></a>StartKeyTask</STRONG> (Thumb, 632 bytes, Stack size 0 bytes, freertos.o(.text.StartKeyTask))
+<P><STRONG><a name="[60]"></a>StartKeyTask</STRONG> (Thumb, 976 bytes, Stack size 0 bytes, freertos.o(.text.StartKeyTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = StartKeyTask &rArr; InitESP8266 &rArr; ESP_SetTCPServer &rArr; ESP_Wait &rArr; osDelay &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelGetTickCount
@@ -2247,7 +2250,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.text.MX_FREERTOS_Init)
 </UL>
-<P><STRONG><a name="[5f]"></a>StartMainTask</STRONG> (Thumb, 402 bytes, Stack size 8 bytes, freertos.o(.text.StartMainTask))
+<P><STRONG><a name="[5f]"></a>StartMainTask</STRONG> (Thumb, 424 bytes, Stack size 8 bytes, freertos.o(.text.StartMainTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = StartMainTask &rArr; DispSeg &rArr; osDelay &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelGetTickCount
@@ -3486,6 +3489,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2sprintf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartDataTask
+<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI4
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI3
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI2
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DrawGUI1
