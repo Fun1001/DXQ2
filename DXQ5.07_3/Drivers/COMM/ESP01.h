@@ -61,9 +61,9 @@ uint8_t ESP_CloseClient(void);				// 查询断开连接
 void ESP8266IdleCallBack(UART_HandleTypeDef *huart);//回调函数
 void StartRecvUart6(void);
 
-#define AP_NAME 		"lalala2.4"//连接AP名称
-#define AP_PSW 			"di1001++"	//连接AP的密码
-#define TCP_SERVER 	"120.76.100.197"
+#define AP_NAME 		"PandoraBox-2.4G-435F3C"//连接AP名称
+#define AP_PSW 			"13008985362"	//连接AP的密码
+#define TCP_SERVER 	"192.168.1.248"
 #define TCP_PORT 		10002
 
 #endif	// __ESP8266_H

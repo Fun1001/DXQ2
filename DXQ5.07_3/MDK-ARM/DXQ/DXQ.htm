@@ -3,7 +3,7 @@
 <title>Static Call Graph - [DXQ\DXQ.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image DXQ\DXQ.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6140101: Last Updated: Thu May 13 19:34:37 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6140101: Last Updated: Sat May 15 15:50:54 2021
 <BR><P>
 <H3>Maximum Stack Usage =        896 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -850,7 +850,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartGUITask
 </UL>
 
-<P><STRONG><a name="[ac]"></a>DrawGUI2</STRONG> (Thumb, 632 bytes, Stack size 56 bytes, freertos.o(.text.DrawGUI2))
+<P><STRONG><a name="[ac]"></a>DrawGUI2</STRONG> (Thumb, 668 bytes, Stack size 56 bytes, freertos.o(.text.DrawGUI2))
 <BR><BR>[Stack]<UL><LI>Max Depth = 896<LI>Call Chain = DrawGUI2 &rArr; RateCube &rArr; Rotate_3D &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
@@ -1808,7 +1808,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[139]"></a>InitESP8266</STRONG> (Thumb, 168 bytes, Stack size 8 bytes, freertos.o(.text.InitESP8266))
+<P><STRONG><a name="[139]"></a>InitESP8266</STRONG> (Thumb, 180 bytes, Stack size 8 bytes, freertos.o(.text.InitESP8266))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = InitESP8266 &rArr; ESP_SetTCPServer &rArr; ESP_Wait &rArr; osDelay &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ESP_SetTCPServer
@@ -2235,7 +2235,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.text.MX_FREERTOS_Init)
 </UL>
-<P><STRONG><a name="[60]"></a>StartKeyTask</STRONG> (Thumb, 536 bytes, Stack size 0 bytes, freertos.o(.text.StartKeyTask))
+<P><STRONG><a name="[60]"></a>StartKeyTask</STRONG> (Thumb, 632 bytes, Stack size 0 bytes, freertos.o(.text.StartKeyTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = StartKeyTask &rArr; InitESP8266 &rArr; ESP_SetTCPServer &rArr; ESP_Wait &rArr; osDelay &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelGetTickCount

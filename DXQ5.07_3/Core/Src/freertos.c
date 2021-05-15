@@ -386,6 +386,10 @@ void StartKeyTask(void *argument)
 					case WS_GUI3:
 						if(KEY1==key)
 							g_ws=WS_GUI2;
+						else if(KEY2==key)
+							g_bUping=1;
+						else if(KEY3==key)
+							g_bUping=0;
 						else if(KEY4==key)
 							g_ws=WS_GUI4;
 						else if(KEY6==key)
@@ -785,13 +789,14 @@ void DrawGUI2(void)
 	GUI_DrawHLine(52,0,128);
 	GUI_DrawVLine(48,0,52);
 	
-	GUI_DrawHLine(32,51,128);//∫·œÚX÷·
+	
 	
 	uint8_t i;
 	uint8_t j;
 	switch(g_line_idx)
 	{
 		default:
+			GUI_DrawHLine(32,51,128);//∫·œÚX÷·
 			sprintf(str,"Œ¬∂»:%.1f°Ê",temp);
 			for(i=0;i<MAX_DATA_LEN-1;++i)
 			{
@@ -803,6 +808,7 @@ void DrawGUI2(void)
 			}
 			break;
 		case LINE_FAX:
+			GUI_DrawHLine(32,51,128);//∫·œÚX÷·
 			sprintf(str,"∏©—ˆΩ«:%.1f°„",fAX);
 			for(i=0;i<MAX_DATA_LEN-1;++i)
 			{
@@ -810,6 +816,7 @@ void DrawGUI2(void)
 			}
 			break;
 		case LINE_FAY:
+			GUI_DrawHLine(32,51,128);//∫·œÚX÷·
 			sprintf(str,"∫·πˆΩ«:%.1f°„",fAY);
 			for(i=0;i<MAX_DATA_LEN-1;++i)
 			{
@@ -817,6 +824,7 @@ void DrawGUI2(void)
 			}
 			break;
 		case LINE_FAZ:
+			GUI_DrawHLine(32,51,128);//∫·œÚX÷·
 			sprintf(str,"∫ΩœÚΩ«:%.1f°„",fAZ);
 			for(i=0;i<MAX_DATA_LEN-1;++i)
 			{
