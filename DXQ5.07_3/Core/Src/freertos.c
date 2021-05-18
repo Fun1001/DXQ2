@@ -319,7 +319,7 @@ void StartKeyTask(void *argument)
 					keytick=0;
 				}
 			}
-			osDelay(10);
+			osDelay(1);
 		}
 		if(keyflag==0)		//°´¼üÔÊÐí
 		{
@@ -476,7 +476,7 @@ void StartKeyTask(void *argument)
 						break;
 				}
 				
-				osDelay(10);
+				osDelay(1);
 			}
 		}
   /* USER CODE END StartKeyTask */
