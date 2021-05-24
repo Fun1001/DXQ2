@@ -29,7 +29,8 @@
 #include "gpio.h"
 #include "GUI.h"
 #include	<stdio.h>
-#include "string.h"
+#include  <stdlib.h>
+#include  <string.h>
 #include "tim.h"
 #include "DS_18B20.h"
 #include "MPU6050.h"
@@ -104,7 +105,7 @@ float temp_alarm_max=32;	//报警温度上限
 uint16_t g_upstep=100;		//上传时间间隔
 uint8_t g_mpustep=7;			//震动灵敏度
 uint8_t g_warntime=30;		//报警时长
-
+uint8_t init8266=1;	 //判断wifi初始化是否成功
 uint8_t g_bUping=0;//数据上传开关
 
 uint8_t g_paridx=0;//选择一个设置参数反色显示，参数索引
@@ -156,7 +157,7 @@ void DrawGUI4(void);
 void Beep(int time,int tune);
 void DispSeg(uint8_t num[4],uint8_t dot);
 void BeepDone(void);
-void InitESP8266(void);
+int InitESP8266(void);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -304,10 +305,10 @@ void StartKeyTask(void *argument)
 	
   for(;;)
   {	
+		uint8_t key=KeyScan();
 		if(keyflag)				//报警时，正常按键禁止
 		{
-			uint8_t key1=KeyScan1();
-			if(key1!=0)
+			if(key==0x0f)
 			{
 				if(0==keytick)
 					keytick = osKernelGetTickCount();
@@ -323,7 +324,7 @@ void StartKeyTask(void *argument)
 		}
 		if(keyflag==0)		//按键允许
 		{
-				uint8_t key=KeyScan();
+				
 				if(key>0)
 					printf("%02X\n",key);//打印出按键
 				
@@ -366,7 +367,10 @@ void StartKeyTask(void *argument)
 						else if(KEY4==key)
 						{
 							g_ws=WS_GUI3;
-							InitESP8266();						
+//							if(init8266==1 && esp8266.bconn==0)	//防止重复初始化
+//							{
+								init8266=InitESP8266();
+//							}					
 						}
 						else if(KEY3==key)
 						{	
@@ -404,7 +408,10 @@ void StartKeyTask(void *argument)
 							if(0==pageidx)
 							{
 								//初始化ESP8266工作模式
-								InitESP8266();
+//							if(init8266==1 && esp8266.bconn==0)	//防止重复初始化
+//							{
+								init8266=InitESP8266();
+//							}
 							}
 						}
 						break;
@@ -412,7 +419,10 @@ void StartKeyTask(void *argument)
 						if(KEY1==key)
 						{
 							g_ws=WS_GUI3;	
-							InitESP8266();
+							if(init8266==1)	//防止重复初始化
+							{
+								init8266=InitESP8266();
+							}
 						}
 						else if(KEY4==key)
 							g_ws=WS_GUI1;
@@ -509,6 +519,40 @@ void StartUartTask(void *argument)
 		if(esp8266.recv_len>0)
 		{
 			printf("%s",esp8266.recv_data);
+			
+			char *pb = (char *)esp8266.recv_data;
+			char buf[40];
+			if('Q' == pb[0] && 'P' == pb[1] && 'A' == pb[2] && 'R' == pb[3])
+			{
+				//查询参数，应答
+				sprintf(buf,"P1:%.0f, P2:%d, P3:%d, P4:%d\n",temp_alarm_max,g_mpustep,g_warntime,g_upstep);
+				USendStr(&huart6, (uint8_t *)buf,strlen(buf));
+			}				
+			else if('P' == pb[0] && '1' == pb[1] && ':' == pb[2])
+			{
+				//参数设置
+				temp_alarm_max = atof(pb+3);
+				pb = strstr(pb,"P2:");
+				if(pb)
+				{
+					g_mpustep = atoi(pb+3);
+					
+					pb = strstr(pb,"P3:");
+					if(pb)
+					{
+						g_warntime = atoi(pb+3);
+						
+						pb = strstr(pb,"P4:");
+						if(pb)
+						{
+							g_upstep = atoi(pb+3);
+							USendStr(&huart6,(uint8_t)("OK\n"),3);	//参数设置应答
+						}
+
+					}
+				}
+			}
+			
 			esp8266.recv_len=0;
 		}
 		
@@ -1016,7 +1060,7 @@ void DispSeg(uint8_t num[4],uint8_t dot)
 	}
 }
 //ESP8266初始化
-void InitESP8266(void)
+int InitESP8266(void)
 {
 	ESP_SetCIPMode(0);//退出透传模式
 	if(ESP_IsOK())
@@ -1035,8 +1079,17 @@ void InitESP8266(void)
 			{
 				ESP_SetCIPMode(1);//进入透传模式
 				printf("ESP8266 init ok!\n");
+				return 0;
 			}
+			else return 1;
 		}
+		if(ESP_ClientToServer(TCP_SERVER,TCP_PORT))			//不往外扔一个会出现wifi连上后可能无法连接服务器得单片机复位的问题
+			{
+				ESP_SetCIPMode(1);//进入透传模式
+				printf("ESP8266 init ok!\n");
+				return 0;
+			}
+			else return 1;
 	}
 }
 /* USER CODE END Application */
