@@ -1,8 +1,8 @@
 dxq/guislim.o: ..\Drivers\OLED\GUISlim.c \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h ..\Drivers\OLED\GUI.h \
-  ..\Drivers\OLED\ssd1306.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  ..\Drivers\OLED\GUI.h ..\Drivers\OLED\ssd1306.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\string.h \
   ..\Drivers\OLED\ssd1306_i2c.h ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h \
   ..\Core\Inc\stm32f4xx_hal_conf.h \
@@ -11,12 +11,12 @@ dxq/guislim.o: ..\Drivers\OLED\GUISlim.c \
   ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
   ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h \
   ..\Drivers\CMSIS\Include\core_cm4.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
   ..\Drivers\CMSIS\Include\cmsis_version.h \
   ..\Drivers\CMSIS\Include\cmsis_compiler.h \
   ..\Drivers\CMSIS\Include\cmsis_armclang.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\Drivers\CMSIS\Include\mpu_armv7.h \
   ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \

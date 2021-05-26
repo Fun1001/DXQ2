@@ -592,7 +592,7 @@ void MainWindow::on_btn_setpara_clicked()       //设置参数
                  ui->spin_templmt->value()).arg(
                  ui->cmb_mpustep->currentIndex()).arg(
                  ui->spin_warntime->value()).arg(
-                 (int)ui->spin_uptime->value() * 1000);
+                 (float)ui->spin_uptime->value() * 1000);
      QByteArray tba;
      if (ui->chkHexSend->isChecked())
          tba = HexStringToByteArray(tstr);
@@ -624,4 +624,76 @@ void MainWindow::on_btn_setpara_clicked()       //设置参数
              }
          }
      }
+}
+
+void MainWindow::on_editup_clicked()
+{
+    QString data = "start\n";
+    QByteArray tba;
+    if (ui->chkHexSend->isChecked())
+        tba = HexStringToByteArray(data);
+    else
+        tba = data.toLatin1();
+    if (ui->radioClient->isChecked())
+    {
+        if(!data.isEmpty())
+        {
+            tcpClient->write(tba);
+        }
+    }
+    else {
+        //全部连接
+        if(ui->cbLstClients->currentIndex() == 0)
+        {
+            for(int i=0; i < lstClient.length(); i++)
+                lstClient[i]->write(tba);
+        }
+        else {
+            QString clientIP = ui->cbLstClients->currentText();
+            for(int i=0; i < lstClient.length(); i++)
+            {
+                if(lstClient[i]->peerAddress().toString() == clientIP)
+                {
+                    lstClient[i]->write(tba);
+                    return; //ip:port唯一，无需继续检索
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::on_editstop_clicked()
+{
+    QString data = "stop\n";
+    QByteArray tba;
+    if (ui->chkHexSend->isChecked())
+        tba = HexStringToByteArray(data);
+    else
+        tba = data.toLatin1();
+    if (ui->radioClient->isChecked())
+    {
+        if(!data.isEmpty())
+        {
+            tcpClient->write(tba);
+        }
+    }
+    else {
+        //全部连接
+        if(ui->cbLstClients->currentIndex() == 0)
+        {
+            for(int i=0; i < lstClient.length(); i++)
+                lstClient[i]->write(tba);
+        }
+        else {
+            QString clientIP = ui->cbLstClients->currentText();
+            for(int i=0; i < lstClient.length(); i++)
+            {
+                if(lstClient[i]->peerAddress().toString() == clientIP)
+                {
+                    lstClient[i]->write(tba);
+                    return; //ip:port唯一，无需继续检索
+                }
+            }
+        }
+    }
 }

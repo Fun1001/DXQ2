@@ -106,8 +106,8 @@ uint16_t g_upstep=100;		//上传时间间隔
 uint8_t g_mpustep=7;			//震动灵敏度
 uint8_t g_warntime=30;		//报警时长
 uint8_t init8266=1;	 //判断wifi初始化是否成功
-uint8_t g_bUping=0;//数据上传开关
-
+uint8_t g_bUping=0;//数据上传开关 
+uint8_t onenet=0;	 //判断是onenet还是上位机
 uint8_t g_paridx=0;//选择一个设置参数反色显示，参数索引
 /* USER CODE END Variables */
 /* Definitions for MainTask */
@@ -371,7 +371,7 @@ void StartKeyTask(void *argument)
 //							{
 								init8266=InitESP8266();
 //							}					
-						}
+						} 
 						else if(KEY3==key)
 						{	
 						if(g_line_idx<LINE_3D)
@@ -419,10 +419,10 @@ void StartKeyTask(void *argument)
 						if(KEY1==key)
 						{
 							g_ws=WS_GUI3;	
-							if(init8266==1)	//防止重复初始化
-							{
+//							if(init8266==1)	//防止重复初始化
+//							{
 								init8266=InitESP8266();
-							}
+//							}
 						}
 						else if(KEY4==key)
 							g_ws=WS_GUI1;
@@ -552,7 +552,30 @@ void StartUartTask(void *argument)
 					}
 				}
 			}
-			
+			else if('s' == pb[0] && 't' == pb[1] && 'o' == pb[2] && 'p' == pb[3])	//停止上传
+			{
+				g_bUping=0;
+			}
+			else if('s' == pb[0] && 't' == pb[1] && 'a' == pb[2] && 'r' == pb[3] && 't' == pb[4])	//停止上传
+			{
+				g_bUping=1;
+			}
+			else if('t' == pb[0] && 'e' == pb[1] && 'm' == pb[2] && 'p' == pb[3] )	//设置温度
+			{
+				temp_alarm_max = atof(pb+4);
+			}
+			else if('m' == pb[0] && 'p' == pb[1] && 'u' == pb[2] && 's' == pb[3] )	//设置震动登记
+			{
+				g_mpustep = atof(pb+4);
+			}
+			else if('w' == pb[0] && 'a' == pb[1] && 'n' == pb[2] && 't' == pb[3] )	//设置报警时间
+			{
+				g_warntime = atof(pb+4);
+			}
+			else if('u' == pb[0] && 'p' == pb[1] && 't' == pb[2] && 'm' == pb[3] )	//设置上报时间
+			{
+				g_upstep = atof(pb+4)*100;
+			}
 			esp8266.recv_len=0;
 		}
 		
@@ -639,7 +662,7 @@ void StartDataTask(void *argument)
   for(;;)
   {
 		
-		if(osKernelGetTickCount()>=dstick+1000)
+		if(osKernelGetTickCount()>=dstick+500)
 		{
 			dstick=osKernelGetTickCount();
 			ft = ds18b20_read();
@@ -707,14 +730,31 @@ void StartDataTask(void *argument)
 			
 		if(g_bUping && esp8266.bconn)
 		{
-			if(osKernelGetTickCount()>=uptick+g_upstep)
+			if(onenet==0)
 			{
-				uptick=osKernelGetTickCount();
-				
-				char buf[100];
-				sprintf(buf,"T:%4.1f, A:%6d,%6d,%6d, G:%6d,%6d,%6d, F:%5.1f,%5.1f,%5.1f, W:%d\n",
-				temp,ax,ay,az,gx,gy,gz,fAX,fAY,fAZ,(tempwarn?1:0)+(mpuwarn?2:0));
-				USendStr(&huart6,(uint8_t*)buf,strlen(buf));
+				if(osKernelGetTickCount()>=uptick+g_upstep)
+				{
+					uptick=osKernelGetTickCount();
+					
+					char buf[100];
+					sprintf(buf,"T:%4.1f, A:%6d,%6d,%6d, G:%6d,%6d,%6d, F:%5.1f,%5.1f,%5.1f, W:%d\n",
+					temp,ax,ay,az,gx,gy,gz,fAX,fAY,fAZ,(tempwarn?1:0)+(mpuwarn?2:0));
+					USendStr(&huart6,(uint8_t*)buf,strlen(buf));
+				}
+			}
+			else
+			{
+				if(osKernelGetTickCount()>=uptick+g_upstep)
+				{
+					uptick=osKernelGetTickCount();
+					
+					char buf1[120];
+					//#24#000000#000000#000000#000000#000000#000000#10000#10000#10000#0#
+					sprintf(buf1,"#%2.0f#%6d#%6d#%6d#%6d#%6d#%6d#%5.0f#%5.0f#%5.0f#%d#",
+					temp,ax,ay,az,gx,gy,gz,fAX,fAY,fAZ,(tempwarn?1:0)+(mpuwarn?2:0));
+//					printf("%s",buf1);
+					USendStr(&huart6,(uint8_t*)buf1,strlen(buf1));
+				}
 			}
 		}
     osDelay(1);
@@ -1062,36 +1102,63 @@ void DispSeg(uint8_t num[4],uint8_t dot)
 //ESP8266初始化
 int InitESP8266(void)
 {
-	ESP_SetCIPMode(0);//退出透传模式
-	if(ESP_IsOK())
-	{	
-		ESP_SetMode(3);//station+AP模式
-		ESP_GetSSID();
-		
-		if(ESP_JoinAP(AP_NAME,AP_PSW))
-		{
-			ESP_GetIPAddr();
-			ESP_SetTCPServer(0,0);
-			ESP_SetCIPMux(0);
-			printf("Station ip:%s\n",esp8266.st_addr);//将读到的IP地址显示出来
+	char *id="*431023#shr#mylua*";
+	
+	if(onenet==0)
+	{
+		ESP_SetCIPMode(0);//退出透传模式
+		if(ESP_IsOK())
+		{	
+			ESP_SetMode(3);//station+AP模式
+			ESP_GetSSID();
 			
-			if(ESP_ClientToServer(TCP_SERVER,TCP_PORT))
+			if(ESP_JoinAP(AP_NAME,AP_PSW))
 			{
-				ESP_SetCIPMode(1);//进入透传模式
-				printf("ESP8266 init ok!\n");
-				return 0;
+				ESP_GetIPAddr();
+				ESP_SetTCPServer(0,0);
+				ESP_SetCIPMux(0);
+				printf("Station ip:%s\n",esp8266.st_addr);//将读到的IP地址显示出来
+				if(ESP_ClientToServer(TCP_SERVER,TCP_PORT))
+				{
+					ESP_SetCIPMode(1);//进入透传模式
+					printf("ESP8266 init ok!\n");
+					return 0;
+				}
+				else return 1;
 			}
-			else return 1;
 		}
-		if(ESP_ClientToServer(TCP_SERVER,TCP_PORT))			//不往外扔一个会出现wifi连上后可能无法连接服务器得单片机复位的问题
-			{
-				ESP_SetCIPMode(1);//进入透传模式
-				printf("ESP8266 init ok!\n");
-				return 0;
-			}
-			else return 1;
-	}
+		}
+		else if(onenet==1)
+		{
+					
+					ESP_SetCIPMode(0);//退出透传模式
+					if(ESP_IsOK())
+					{	
+						ESP_SetMode(3);//station+AP模式
+						ESP_GetSSID();
+						
+						if(ESP_JoinAP(AP_NAME,AP_PSW))
+						{
+							ESP_GetIPAddr();
+							ESP_SetTCPServer(0,0);
+							ESP_SetCIPMux(0);
+							printf("Station ip:%s\n",esp8266.st_addr);//将读到的IP地址显示出来
+							
+							if(ESP_ClientToServer(onenet_TCP_SERVER,onenet_TCP_PORT))
+							{
+								ESP_SetCIPMode(1);//进入透传模式
+								printf("ESP8266 init ok!\n");
+								//sprintf(id,"*431023#shr#mylua*");
+								USendStr(&huart6,(uint8_t *)id,strlen(id));	//连接到设备
+								printf("%s",id);
+								return 0;
+							}
+							else return 1;
+						}
+					}
+		}
 }
+
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

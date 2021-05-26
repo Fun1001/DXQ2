@@ -1,2 +1,3 @@
 dxq/sunhr.o: ..\Core\Src\SunHR.c \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ..\Drivers\OLED\GUI.h
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  ..\Drivers\OLED\GUI.h

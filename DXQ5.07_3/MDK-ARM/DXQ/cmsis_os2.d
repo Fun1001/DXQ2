@@ -1,13 +1,13 @@
 dxq/cmsis_os2.o: \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.c \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\string.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \
   ..\Drivers\CMSIS\Include\cmsis_compiler.h \
   ..\Drivers\CMSIS\Include\cmsis_armclang.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h \
   ..\Core\Inc\FreeRTOSConfig.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h \

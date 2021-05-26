@@ -1,7 +1,7 @@
 dxq/freertos.o: ..\Core\Src\freertos.c \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
   ..\Core\Inc\FreeRTOSConfig.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h \
@@ -20,8 +20,8 @@ dxq/freertos.o: ..\Core\Src\freertos.c \
   ..\Drivers\CMSIS\Include\cmsis_version.h \
   ..\Drivers\CMSIS\Include\cmsis_compiler.h \
   ..\Drivers\CMSIS\Include\cmsis_armclang.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\Drivers\CMSIS\Include\mpu_armv7.h \
   ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \
@@ -43,11 +43,11 @@ dxq/freertos.o: ..\Core\Src\freertos.c \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h \
   ..\Core\Inc\gpio.h ..\Core\Inc\main.h ..\Drivers\OLED\GUI.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  E:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ..\Core\Inc\tim.h \
-  ..\Drivers\DS_18B20\DS_18B20.h ..\Drivers\MPU6050\MPU6050.h \
-  ..\Drivers\MPU6050\inv_mpu.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  D:\keil5_tools\keil5\ARM\ARMCLANG\Bin\..\include\string.h \
+  ..\Core\Inc\tim.h ..\Drivers\DS_18B20\DS_18B20.h \
+  ..\Drivers\MPU6050\MPU6050.h ..\Drivers\MPU6050\inv_mpu.h \
   ..\Drivers\MPU6050\inv_mpu_dmp_motion_driver.h \
   ..\Drivers\MPU6050\STM32_I2C.h ..\Drivers\3Ddisplay\Display_3D.h \
   ..\Drivers\COMM\COMM.h ..\Core\Inc\usart.h \

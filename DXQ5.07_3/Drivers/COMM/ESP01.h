@@ -63,7 +63,10 @@ void StartRecvUart6(void);
 
 #define AP_NAME 		"ran"//连接AP名称
 #define AP_PSW 			"sunhr2917"	//连接AP的密码
-#define TCP_SERVER 	"192.168.112.88"
+#define TCP_SERVER 	"192.168.54.200"
 #define TCP_PORT 		4321
-
+//#define onenet_TCP_SERVER 	"183.230.40.40"
+//#define onenet_TCP_PORT 		1811
+#define onenet_TCP_SERVER 	"183.230.40.40"
+#define onenet_TCP_PORT 		1811
 #endif	// __ESP8266_H
